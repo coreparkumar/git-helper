@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git-Help BAT Files | Complete Git Management Toolkit</title>
+    <meta name="description" content="A complete set of Windows batch scripts to simplify Git operations from VS Code. No merge conflicts, no headaches.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f05033'%3E%3Cpath d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z'/%3E%3C/svg%3E">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #f05033;
+            --primary-dark: #c93d24;
+            --secondary: #24292e;
+            --accent: #0366d6;
+            --bg: #ffffff;
+            --bg-alt: #f6f8fa;
+            --text: #24292e;
+            --text-light: #586069;
+            --border: #e1e4e8;
+            --success: #28a745;
+            --warning: #f59e0b;
+            --danger: #d73a49;
+            --code-bg: #1e1e1e;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d1117;
+            --bg-alt: #161b22;
+            --text: #c9d1d9;
+            --text-light: #8b949e;
+            --border: #30363d;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 0.75rem 0;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13,17,23,0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-brand i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.4rem 0.6rem;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 4rem 1.5rem 3rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 100%);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Section */
+        section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.05rem;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Script Cards */
+        .script-card {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .script-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .script-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .script-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .script-title {
+            flex: 1;
+        }
+
+        .script-title h2 {
+            font-size: 1.5rem;
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+        }
+
+        .script-title p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .script-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .script-tag.warning { background: var(--warning); }
+        .script-tag.info { background: var(--accent); }
+        .script-tag.success { background: var(--success); }
+
+        .script-section {
+            margin-top: 1.5rem;
+        }
+
+        .script-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .script-section h3 i {
+            color: var(--primary);
+        }
+
+        .script-section p,
+        .script-section li {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .script-section ul {
+            padding-left: 1.5rem;
+        }
+
+        /* Code blocks */
+        pre[class*="language-"] {
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        :not(pre) > code {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+
+        /* Usage Box */
+        .usage-box {
+            background: var(--code-bg);
+            color: #f8f8f2;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        /* Benefits */
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-list li {
+            padding: 0.5rem 0 0.5rem 1.75rem;
+            position: relative;
+        }
+
+        .benefits-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Workflow */
+        .workflow {
+            background: var(--bg-alt);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .workflow-step {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .workflow-step::after {
+            content: "→";
+            position: absolute;
+            right: -0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .workflow-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 0.5rem;
+        }
+
+        .workflow-step h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .workflow-step code {
+            font-size: 0.8rem;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .faq-question:hover {
+            background: var(--bg);
+        }
+
+        .faq-answer {
+            padding: 0 1.25rem 1rem;
+            color: var(--text-light);
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-question i {
+            transition: transform 0.2s;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-alt);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: 3rem 1rem 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .workflow-step::after {
+                display: none;
+            }
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 99;
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <i class="fab fa-git-alt"></i>
+                Git-Help BAT Files
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#scripts">Scripts</a></li>
+                <li><a href="#workflow">Workflow</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <span class="hero-badge">
+            <i class="fas fa-bolt"></i> No More Merge Conflicts
+        </span>
+        <h1>Git Management Made Simple</h1>
+        <p>A complete set of Windows batch scripts to handle all your Git operations from VS Code. Push, pull, commit, and manage repos without the headache.</p>
+        <div class="hero-actions">
+            <a href="#scripts" class="btn btn-primary">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="https://github.com/coreparkumar/git-help" class="btn btn-secondary">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">8</div>
+                <div class="stat-label">BAT Scripts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Merge Conflicts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Branch (main)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Productivity</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <section id="features">
+        <div class="container">
+            <h2 class="section-title">Why Use These Scripts?</h2>
+            <p class="section-subtitle">Stop fighting with Git. Start shipping code.</p>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                    <h3>Zero Merge Conflicts</h3>
+                    <p>Use only the main branch and force-sync to avoid 99% of Git headaches.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-terminal"></i></div>
+                    <h3>Simple Commands</h3>
+                    <p>Replace complex Git commands with simple BAT files anyone can use.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Safety First</h3>
+                    <p>Confirmations before destructive operations. Backups created automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Fast Workflow</h3>
+                    <p>Push and pull in seconds. No typing long commands or remembering flags.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Secret Detection</h3>
+                    <p>Built-in scanner catches API keys and tokens before they get committed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3>Branch Manager</h3>
+                    <p>Create, switch, rename, and delete branches with a simple menu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <section id="scripts">
+        <div class="container">
+            <h2 class="section-title">📜 The 8 BAT Scripts</h2>
+            <p class="section-subtitle">Each script is purpose-built to solve a specific Git pain point</p>
+
+            <!-- Script 1: git-init.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-play"></i></div>
+                    <div class="script-title">
+                        <h2>git-init.bat</h2>
+                        <p>Initialize a new Git repository and connect to GitHub</p>
+                    </div>
+                    <span class="script-tag">Setup</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>One-command setup for new projects. Initializes Git, creates the main branch, and connects to your GitHub repository.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-init.bat https://github.com/username/repo.git</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-init.bat https://github.com/username/repo.git')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Single command to set up entire repo</li>
+                        <li>Handles "remote already exists" error automatically</li>
+                        <li>Forces main branch (modern standard)</li>
+                        <li>Verifies connection at the end</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 2: git-push.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="script-title">
+                        <h2>git-push.bat</h2>
+                        <p>Stage, commit, and push all changes to GitHub</p>
+                    </div>
+                    <span class="script-tag success">Daily Use</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>The workhorse script you'll use daily. Prompts for a commit message, stages all files, commits, and pushes. If push fails, it offers a safe force-push option.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-push.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-push.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Then type your commit message when prompted.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Auto-defaults to date/time if no message provided</li>
+                        <li>Falls back to force-push with confirmation</li>
+                        <li>Window stays open so you see results</li>
+                        <li>No need to remember Git syntax</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 3: git-pull.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-cloud-download-alt"></i></div>
+                    <div class="script-title">
+                        <h2>git-pull.bat</h2>
+                        <p>Download latest from GitHub and overwrite local files</p>
+                    </div>
+                    <span class="script-tag warning">Destructive</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Fetches the latest code from GitHub and resets your local folder to match exactly. Deletes any uncommitted local changes.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-pull.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-pull.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Perfect for multi-device workflows</li>
+                        <li>No merge conflicts ever</li>
+                        <li>Shows last 5 commits after sync</li>
+                        <li>Cleans untracked files automatically</li>
+                    </ul>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Warning</h3>
+                    <p>⚠️ All uncommitted local changes will be <strong>permanently deleted</strong>. Commit first if you want to keep them.</p>
+                </div>
+            </div>
+
+            <!-- Script 4: git-sync.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-sync-alt"></i></div>
+                    <div class="script-title">
+                        <h2>git-sync.bat</h2>
+                        <p>Smart sync — choose to pull, push, or do both</p>
+                    </div>
+                    <span class="script-tag info">Smart</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Interactive menu that lets you choose: pull from GitHub, push to GitHub, or sync both ways. Perfect when you're not sure which direction you need.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-sync.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-sync.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Interactive menu for flexibility</li>
+                        <li>Shows status before doing anything</li>
+                        <li>Handles all sync scenarios in one script</li>
+                        <li>Great for beginners</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 5: git-status.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="script-title">
+                        <h2>git-status.bat</h2>
+                        <p>View branch, remote, commits, and current state</p>
+                    </div>
+                    <span class="script-tag">Info</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Quick overview of your Git state — current branch, remote URL, recent commits, and any uncommitted changes.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-status.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-status.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>All info in one screen</li>
+                        <li>No need to remember multiple Git commands</li>
+                        <li>Perfect for debugging sync issues</li>
+                        <li>Safe to run anytime</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 6: git-undo.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-undo"></i></div>
+                    <div class="script-title">
+                        <h2>git-undo.bat</h2>
+                        <p>Undo the last commit (keep or delete changes)</p>
+                    </div>
+                    <span class="script-tag warning">Destructive</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Three options to undo commits: keep changes staged, unstage them, or delete everything. Hard reset requires typing "yes" to confirm.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-undo.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-undo.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Choose 1, 2, or 3 when prompted.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Three levels of undo (safe to destructive)</li>
+                        <li>Clear prompts explain what each does</li>
+                        <li>Confirmation required for hard reset</li>
+                        <li>Shows status after operation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 7: git-branch.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-code-branch"></i></div>
+                    <div class="script-title">
+                        <h2>git-branch.bat</h2>
+                        <p>Manage branches: create, switch, rename, delete</p>
+                    </div>
+                    <span class="script-tag info">Manager</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Interactive branch management. Lists all branches, then lets you create, switch to, rename, or delete them with confirmations.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-branch.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-branch.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>All branch operations in one place</li>
+                        <li>Safe deletion with confirmation</li>
+                        <li>Shows local AND remote branches</li>
+                        <li>No need to remember Git branch syntax</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script 8: git-secret-check.bat -->
+            <div class="script-card">
+                <div class="script-header">
+                    <div class="script-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="script-title">
+                        <h2>git-secret-check.bat</h2>
+                        <p>Scan staged files for API keys and secrets</p>
+                    </div>
+                    <span class="script-tag success">Security</span>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-info-circle"></i> What It Does</h3>
+                    <p>Pre-commit security scanner. Checks your staged changes for common secret patterns (API keys, tokens, passwords) and warns you before pushing them to GitHub.</p>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-terminal"></i> Usage</h3>
+                    <div class="usage-box">
+                        <span>git-secret-check.bat</span>
+                        <button class="copy-btn" onclick="copyText(this, 'git-secret-check.bat')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-check-circle"></i> Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Prevents accidental secret leaks</li>
+                        <li>Catches common API key patterns</li>
+                        <li>Saves you from GitHub push rejections</li>
+                        <li>Run before any commit</li>
+                    </ul>
+                </div>
+
+                <div class="script-section">
+                    <h3><i class="fas fa-search"></i> Detects</h3>
+                    <ul class="benefits-list">
+                        <li>API keys (sk-, pk-, api_key=)</li>
+                        <li>Bearer tokens</li>
+                        <li>Password assignments</li>
+                        <li>Private keys (PEM format)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow -->
+    <section id="workflow">
+        <div class="container">
+            <h2 class="section-title">📅 Daily Workflow</h2>
+            <p class="section-subtitle">From setup to daily use in 4 simple steps</p>
+            <div class="workflow">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <h4>One-Time Setup</h4>
+                        <code>git-init.bat URL</code>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <h4>Morning Sync</h4>
+                        <code>git-pull.bat</code>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <h4>Code All Day</h4>
+                        <p style="font-size: 0.85rem; margin-top: 0.3rem;">Make changes, save files</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <h4>Evening Push</h4>
+                        <code>git-push.bat</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <div class="container">
+            <h2 class="section-title">❓ FAQ</h2>
+            <p class="section-subtitle">Common questions answered</p>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Why use only the main branch?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Using a single branch eliminates 99% of merge conflicts. For solo projects or small teams, this is the fastest workflow. You can always add branches later when needed.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is force-push safe?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>For solo projects on the main branch: yes. For team projects: only force-push your own feature branches, never the main branch. Our scripts always ask for confirmation before force-pushing.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What if I lose files after git-pull.bat?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Run <code>git reflog</code> — it shows every commit you've been on, including "deleted" ones. Find your work, then <code>git reset --hard &lt;hash&gt;</code> to restore.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I use these on Mac/Linux?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>These are Windows .bat files. For Mac/Linux, convert them to .sh bash scripts. The Git commands are the same — just change the syntax (e.g., <code>set /p</code> → <code>read</code>).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What if I accidentally commit a secret?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>First, <strong>revoke the secret immediately</strong> (GitHub already blocked your push). Then remove it from your files, commit the fix, and force-push. Use <code>git-secret-check.bat</code> going forward.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p><strong>Git-Help BAT Files</strong> — Making Git simple for everyone</p>
+            <p style="margin-top: 0.5rem;">Built with ❤️ for VS Code users • <a href="https://github.com/coreparkumar/git-help">View Source</a> • <a href="https://github.com/coreparkumar/git-help/blob/main/LICENSE">MIT License</a></p>
+            <div class="social-links">
+                <a href="https://github.com/coreparkumar/git-help" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://github.com/coreparkumar/git-help/stargazers" aria-label="Star"><i class="fas fa-star"></i></a>
+                <a href="https://github.com/coreparkumar/git-help/issues" aria-label="Issues"><i class="fas fa-bug"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to top -->
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                body.removeAttribute('data-theme');
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Copy to clipboard
+        function copyText(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                q.parentElement.classList.toggle('active');
+            });
+        });
+
+        // Scroll to top
+        const scrollBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
